@@ -64,15 +64,16 @@ export default function HomePage() {
   return (
     <main>
       <section className="relative">
-        <div className="relative aspect-[16/10] w-full">
+        {/* Ratio natif de la photo (941 x 974) : aucun recadrage. */}
+        <div className="relative aspect-[941/974] max-h-[45dvh] w-full">
           <SafeImage
-            src="/images/hero-viet-golf.jpg"
+            src="/images/hero-viet-golf-v2.jpg"
             alt="Sân golf cao cấp lúc hoàng hôn"
             priority
           />
-          {/* Voile haut pour le logo, fondu bas vers le fond de l'application. */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/10 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-bg-main to-transparent" />
+          {/* Voile haut pour le logo, fondu bas pour la lisibilité du titre. */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-transparent to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-bg-main via-bg-main/80 to-transparent" />
         </div>
 
         <div className="safe-top absolute inset-x-0 top-0 flex flex-col items-center px-4">
@@ -84,7 +85,7 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="relative -mt-7 px-4">
+        <div className="absolute inset-x-0 bottom-2 px-4">
           <h1 className="font-[family-name:var(--font-display)] text-[30px] leading-[1.15] font-semibold text-text-main">
             Những sân golf
             <br />
@@ -96,8 +97,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mt-4 px-4">
-        <div className="rounded-[16px] border border-border-gold bg-card/85 p-3 backdrop-blur-md">
+      <section className="mt-1 px-4">
+        <div className="rounded-[16px] border border-border-gold bg-card/85 p-2.5 backdrop-blur-md">
           <ul className="space-y-2">
             <li>
               <div className="flex min-h-[52px] items-center gap-3 rounded-[12px] border border-border-gold bg-card-elevated px-4">
@@ -140,7 +141,7 @@ export default function HomePage() {
             </li>
           </ul>
 
-          <div className="mt-3">
+          <div className="mt-2.5">
             <GoldButton onClick={() => router.push("/search")}>
               Tìm sân golf ngay <ArrowRight className="size-4" aria-hidden="true" />
             </GoldButton>
