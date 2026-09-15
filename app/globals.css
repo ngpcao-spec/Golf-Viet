@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-main: #090c0a;
+  --color-bg-secondary: #101511;
+  --color-card: #151a16;
+  --color-card-elevated: #1a201b;
+  --color-gold: #d8b45a;
+  --color-gold-light: #f0d27b;
+  --color-text-main: #f5f1e8;
+  --color-text-secondary: #a9aaa4;
+  --color-promo-red: #e8564f;
+  --color-available-green: #5fa977;
+  --color-border-gold: rgba(216, 180, 90, 0.18);
+
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --radius-card: 16px;
+  --radius-button: 12px;
+  --radius-media: 18px;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  background-color: var(--color-bg-main);
+}
+
+body {
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* L'application reste centrée et bornée façon maquette mobile sur desktop. */
+.app-shell {
+  width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
+  min-height: 100dvh;
+  background-color: var(--color-bg-main);
+  position: relative;
+}
+
+@media (min-width: 520px) {
+  body {
+    background-color: #050706;
+  }
+
+  .app-shell {
+    box-shadow: 0 0 0 1px rgba(216, 180, 90, 0.08), 0 30px 80px rgba(0, 0, 0, 0.6);
+  }
+}
+
+.safe-bottom {
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+}
+
+.safe-top {
+  padding-top: calc(0.75rem + env(safe-area-inset-top, 0px));
+}
+
+.gold-text {
+  background: linear-gradient(135deg, #f0d27b 0%, #d8b45a 55%, #b8923f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gold-rule {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(216, 180, 90, 0.45),
+    transparent
+  );
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@keyframes vg-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-up {
+  animation: vg-fade-up 220ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
