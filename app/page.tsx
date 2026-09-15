@@ -64,13 +64,15 @@ export default function HomePage() {
   return (
     <main>
       <section className="relative">
-        <div className="relative aspect-[4/5] max-h-[400px] w-full">
+        <div className="relative aspect-[16/10] w-full">
           <SafeImage
-            src="https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80"
+            src="/images/hero-viet-golf.jpg"
             alt="Sân golf cao cấp lúc hoàng hôn"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/45 to-bg-main" />
+          {/* Voile haut pour le logo, fondu bas vers le fond de l'application. */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/10 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-bg-main to-transparent" />
         </div>
 
         <div className="safe-top absolute inset-x-0 top-0 flex flex-col items-center px-4">
@@ -82,7 +84,7 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="absolute inset-x-0 bottom-4 px-4">
+        <div className="relative -mt-7 px-4">
           <h1 className="font-[family-name:var(--font-display)] text-[30px] leading-[1.15] font-semibold text-text-main">
             Những sân golf
             <br />
@@ -94,7 +96,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="-mt-2 px-4">
+      <section className="mt-4 px-4">
         <div className="rounded-[16px] border border-border-gold bg-card/85 p-3 backdrop-blur-md">
           <ul className="space-y-2">
             <li>
