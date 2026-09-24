@@ -126,28 +126,34 @@ de stack trace ni de 500 brut.
 ## 7 bis. Intro caméra de l'accueil
 
 À chaque lancement de l'application (ouverture de l'URL, icône de l'écran d'accueil,
-rechargement) :
+rechargement), la caméra et l'accueil forment une seule séquence de 3,4 s :
 
-1. **0 → 2,8 s — poussée caméra.** La photo large apparaît entière, puis la caméra avance
-   et se pose lentement sur le cadrage du hero. Un voile monte avec elle et prend
-   exactement la forme du fondu bas du hero : en fin de course, l'intro est identique à
-   l'accueil.
-2. **2,8 → 4,6 s — l'accueil se construit.** Le titre, le sous-titre, la carte de recherche
-   et les sections suivantes entrent en cascade ; la barre d'onglets glisse depuis le bas.
-   L'accueil est utilisable dès ~3 s.
+1. **0 s** — écran de lancement : fond noir et logo, le temps que l'app démarre.
+2. **0 → 3,4 s** — la photo large apparaît entière, puis la caméra avance, mouvement
+   réparti sur toute la durée, et se pose en douceur sur le cadrage du hero. Un voile
+   monte avec elle et prend exactement la forme du fondu bas du hero.
+3. **dès 1,3 s** — l'accueil se construit **par-dessus la photo qui avance** : titre,
+   sous-titre, carte de recherche, sections, puis la barre d'onglets glisse depuis le bas.
+   Tout se pose avec la caméra.
+4. **3,4 s** — l'intro, devenue identique à l'accueil, disparaît sans saut.
 
 - **Raccord exact** : intro et hero affichent la même photo
   (`public/images/hero-viet-golf-wide.jpg`) avec le même mapping à l'écran, calculé par
   `lib/intro/heroFraming.ts`. Pour recadrer l'accueil, modifier `focalX`, `focalY` et `zoom` :
   l'intro suit automatiquement.
-- **Réglages de rythme** : `PUSH_MS`, `PUSH_EASING`, `PHOTO_FADE_IN_MS` dans
-  `components/home/IntroSplash.tsx` ; délais de la cascade via `revealDelay(...)` dans
-  `app/page.tsx` ; durées d'entrée dans `app/globals.css` (`vg-reveal`).
+- **Réglages de rythme** : `PUSH_MS`, `PUSH_EASING`, `PHOTO_FADE_IN_MS` et `REVEAL_AT_MS`
+  (départ de l'accueil pendant la poussée) dans `components/home/IntroSplash.tsx` ; délais
+  de la cascade via `revealDelay(...)` dans `app/page.tsx` ; durée d'entrée dans
+  `app/globals.css` (`vg-reveal`), à garder égale à `REVEAL_DURATION_MS`
+  (`lib/intro/reveal.ts`).
+- **Synchronisation** : départ de l'accueil et bascule finale sont portés par l'horloge
+  des animations de la caméra, pas par des minuteries : ils restent calés même si
+  l'appareil a un à-coup.
 - **Non bloquante** : un toucher coupe l'intro et lance directement la cascade.
 - **Pas de rejeu** en revenant sur l'accueil via l'onglet `Trang chủ` pendant la navigation.
 - **Accessibilité** : avec « Réduire les animations » activé, ni intro ni cascade.
 - **Filets de sécurité** : si le JavaScript échoue ou arrive trop tard, l'écran d'intro
-  s'efface seul (5,5 s) et l'accueil s'affiche quoi qu'il arrive (6,5 s).
+  s'efface seul (6,5 s) et l'accueil s'affiche quoi qu'il arrive (7 s).
 - Pour changer la photo, **changer aussi son nom de fichier** : l'optimiseur d'images de
   Next et de Vercel met les images en cache par URL.
 

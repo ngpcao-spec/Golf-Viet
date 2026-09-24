@@ -1,26 +1,58 @@
 import type { CSSProperties } from "react";
 
 /**
- * Orchestration de l'entrée de l'accueil après l'intro caméra.
+ * Orchestration de l'entrée de l'accueil, synchronisée sur l'intro caméra.
  *
  * L'état vit sur `<html data-intro>` pour atteindre aussi la barre d'onglets,
  * rendue par le layout :
- * - `playing` : l'intro joue, les éléments `.vg-reveal` attendent, masqués ;
- * - `reveal`  : ils entrent en cascade, chacun avec son propre délai ;
+ * - `playing` : la caméra avance, les éléments `.vg-reveal` attendent, masqués ;
+ * - `reveal`  : ils entrent en cascade PAR-DESSUS l'intro qui se poursuit,
+ *               chacun avec son propre délai, et se posent avec la caméra ;
  * - absent    : état normal, rien n'est animé (retour sur l'accueil, etc.).
  */
 export type IntroPhase = "playing" | "reveal";
+
+/** Durée d'entrée d'un élément — doit rester égale à celle de `vg-reveal` (globals.css). */
+export const REVEAL_DURATION_MS = 1100;
+/** Plus grand délai utilisé dans la cascade de l'accueil. */
+export const REVEAL_LAST_DELAY_MS = 950;
+/** Durée de la cascade complète, depuis son déclenchement. */
+export const REVEAL_TOTAL_MS = REVEAL_LAST_DELAY_MS + REVEAL_DURATION_MS;
 
 /** Délai d'entrée d'un élément `.vg-reveal`, en millisecondes. */
 export function revealDelay(ms: number): CSSProperties {
   return { "--vg-delay": `${ms}ms` } as CSSProperties;
 }
 
-/** Durée de la cascade complète : dernier délai + durée d'une entrée. */
-export const REVEAL_TOTAL_MS = 820 + 900;
+export function getIntroPhase(): string | undefined {
+  return document.documentElement.dataset.intro;
+}
 
 export function setIntroPhase(phase: IntroPhase | null): void {
   const root = document.documentElement;
   if (phase) root.dataset.intro = phase;
   else delete root.dataset.intro;
+}
+
+/**
+ * Tant que l'overlay d'intro est à l'écran, les éléments de l'accueil restent
+ * au-dessus de lui (`<html data-intro-overlay>`), indépendamment de la cascade
+ * qui peut se terminer juste avant la bascule finale.
+ */
+export function setIntroOverlay(onScreen: boolean): void {
+  const root = document.documentElement;
+  if (onScreen) root.dataset.introOverlay = "";
+  else delete root.dataset.introOverlay;
+}
+
+let revealTimer: number | undefined;
+
+/**
+ * Lance la cascade. Elle vit indépendamment de l'overlay d'intro : la fin de
+ * l'intro ne doit jamais l'interrompre ni la faire sauter à l'état final.
+ */
+export function startReveal(): void {
+  setIntroPhase("reveal");
+  window.clearTimeout(revealTimer);
+  revealTimer = window.setTimeout(() => setIntroPhase(null), REVEAL_TOTAL_MS);
 }

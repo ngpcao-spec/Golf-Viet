@@ -139,13 +139,14 @@ body {
 }
 
 .vg-intro {
-  animation: vg-intro-failsafe 400ms ease-out 5500ms forwards;
+  animation: vg-intro-failsafe 400ms ease-out 6500ms forwards;
 }
 
 /*
- * Entrée de l'accueil après l'intro caméra (voir lib/intro/reveal.ts).
- * Pendant l'intro les éléments attendent masqués ; un filet les révèle
- * quoi qu'il arrive au bout de 6,5 s.
+ * Entrée de l'accueil synchronisée sur l'intro caméra (voir lib/intro/reveal.ts).
+ * Pendant l'intro, les éléments passent AU-DESSUS de l'overlay (z-index 110 >
+ * 100) : ils se construisent sur la photo qui avance. Un filet les révèle
+ * quoi qu'il arrive au bout de 7 s.
  */
 @keyframes vg-reveal {
   from {
@@ -175,17 +176,27 @@ body {
   }
 }
 
+html[data-intro-overlay] .vg-reveal {
+  position: relative;
+  z-index: 110;
+}
+
+html[data-intro-overlay] .vg-reveal-nav {
+  z-index: 110;
+}
+
 html[data-intro="playing"] .vg-reveal,
 html[data-intro="playing"] .vg-reveal-nav {
   opacity: 0;
-  animation: vg-reveal-failsafe 500ms ease-out 6500ms forwards;
+  pointer-events: none;
+  animation: vg-reveal-failsafe 500ms ease-out 7000ms forwards;
 }
 
 html[data-intro="reveal"] .vg-reveal {
-  animation: vg-reveal 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation: vg-reveal 1100ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
   animation-delay: var(--vg-delay, 0ms);
 }
 
 html[data-intro="reveal"] .vg-reveal-nav {
-  animation: vg-reveal-nav 800ms cubic-bezier(0.2, 0.7, 0.2, 1) 450ms both;
+  animation: vg-reveal-nav 1000ms cubic-bezier(0.2, 0.7, 0.2, 1) 800ms both;
 }

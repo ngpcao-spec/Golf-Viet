@@ -4,23 +4,32 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import HeroLogo from "@/components/home/HeroLogo";
 import { HERO_IMAGE, heroMapping, introEndTransform } from "@/lib/intro/heroFraming";
-import { REVEAL_TOTAL_MS, setIntroPhase } from "@/lib/intro/reveal";
+import { getIntroPhase, setIntroOverlay, setIntroPhase, startReveal } from "@/lib/intro/reveal";
 
 /**
  * Chronologie : apparition de la photo, longue poussée caméra qui se pose en
- * douceur, puis l'accueil se construit en cascade (voir lib/intro/reveal.ts).
+ * douceur. L'accueil commence à se construire PENDANT la poussée, par-dessus
+ * la photo, et se pose avec elle (voir lib/intro/reveal.ts).
  */
-const PHOTO_FADE_IN_MS = 900;
-const PUSH_MS = 2800;
-/** Départ doux, longue glissade, atterrissage très progressif. */
-const PUSH_EASING = "cubic-bezier(0.32, 0, 0.08, 1)";
+const PHOTO_FADE_IN_MS = 1000;
+const PUSH_MS = 3400;
+/**
+ * Départ doux et mouvement réparti sur toute la durée : la caméra avance
+ * encore nettement pendant que l'accueil se construit, puis se pose en douceur.
+ */
+const PUSH_EASING = "cubic-bezier(0.45, 0, 0.25, 1)";
+/**
+ * Instant de la poussée où l'accueil commence à se construire (~38 % du temps,
+ * ~50 % du trajet) ; la cascade se termine avec l'atterrissage de la caméra.
+ */
+const REVEAL_AT_MS = 1300;
 /** En fin de poussée, intro et accueil sont identiques : bascule quasi instantanée. */
 const SWAP_MS = 220;
 const SKIP_FADE_MS = 300;
 /** Délai maximal d'attente de la photo avant de renoncer à l'intro. */
 const IMAGE_TIMEOUT_MS = 900;
 /** Au-delà, la page a trop tardé à s'hydrater : on n'impose pas l'intro. */
-const LATE_START_MS = 2200;
+const LATE_START_MS = 2000;
 
 /**
  * Vrai après la première lecture : l'intro se joue à chaque lancement de
@@ -30,10 +39,10 @@ let introPlayed = false;
 
 /**
  * Intro « caméra qui avance ». La photo large apparaît entière, puis la caméra
- * pousse jusqu'au cadrage exact du hero. Pendant la poussée, un voile monte
- * avec elle et prend la forme exacte du fondu bas du hero : en fin de course,
- * l'intro est identique à l'accueil au pixel près. L'overlay disparaît alors
- * sans saut et les éléments de l'accueil entrent en cascade.
+ * pousse jusqu'au cadrage exact du hero. Un voile monte avec elle et prend la
+ * forme exacte du fondu bas du hero. À mi-course, les éléments de l'accueil
+ * commencent à entrer par-dessus l'intro, si bien que page et caméra se posent
+ * ensemble ; l'overlay, devenu identique au hero, disparaît alors sans saut.
  */
 export default function IntroSplash({
   heroRef,
@@ -46,7 +55,6 @@ export default function IntroSplash({
   const photoRef = useRef<HTMLDivElement>(null);
   const veilRef = useRef<HTMLDivElement>(null);
   const veilFadeRef = useRef<HTMLDivElement>(null);
-  const closeRef = useRef<((fadeMs: number) => void) | null>(null);
 
   useEffect(() => {
     if (!visible) return;
@@ -71,20 +79,29 @@ export default function IntroSplash({
     const previousOverflow = html.style.overflow;
     html.style.overflow = "hidden";
     window.scrollTo(0, 0);
-    // L'accueil attend, masqué, sous l'intro.
+    // L'accueil attend, masqué, au-dessus de l'intro où il se construira.
     setIntroPhase("playing");
+    setIntroOverlay(true);
 
     const animations: Animation[] = [];
-    let revealTimer: number | undefined;
     let closed = false;
     let cancelled = false;
+    // La cascade ne démarre qu'une fois par intro : quand la caméra se pose,
+    // elle peut déjà être terminée et ne doit surtout pas repartir.
+    let revealed = false;
+    const reveal = () => {
+      if (revealed) return;
+      revealed = true;
+      startReveal();
+    };
 
     const close = (fadeMs: number) => {
       if (closed) return;
       closed = true;
-      // La cascade démarre avec la bascule : aucun temps mort.
-      setIntroPhase("reveal");
-      revealTimer = window.setTimeout(() => setIntroPhase(null), REVEAL_TOTAL_MS);
+      document.removeEventListener("pointerdown", skip, true);
+      // Si la cascade n'a pas encore démarré (toucher, photo indisponible),
+      // elle démarre maintenant ; sinon elle poursuit sa course sans saut.
+      reveal();
 
       const from = getComputedStyle(overlay).opacity;
       const fade = overlay.animate([{ opacity: from }, { opacity: 0 }], {
@@ -95,10 +112,15 @@ export default function IntroSplash({
       animations.push(fade);
       fade.onfinish = () => {
         html.style.overflow = previousOverflow;
+        setIntroOverlay(false);
         setVisible(false);
       };
     };
-    closeRef.current = close;
+
+    // Toucher n'importe où — y compris sur un élément déjà apparu de l'accueil,
+    // qui reçoit quand même son toucher — coupe l'intro.
+    const skip = () => close(SKIP_FADE_MS);
+    document.addEventListener("pointerdown", skip, true);
 
     const play = () => {
       if (cancelled || closed) return;
@@ -148,8 +170,12 @@ export default function IntroSplash({
         ),
       );
 
-      // La bascule part de la fin réelle de la poussée, jamais d'une
-      // minuterie séparée : même avec un à-coup, le raccord reste exact.
+      // Les deux signaux sont portés par la même horloge que la caméra, jamais
+      // par des minuteries séparées : même avec un à-coup, l'accueil démarre
+      // au bon moment de la poussée et la bascule tombe sur le raccord exact.
+      const cue = stage.animate([{ opacity: 1 }, { opacity: 1 }], { duration: REVEAL_AT_MS });
+      animations.push(cue);
+      cue.finished.then(reveal, () => undefined);
       push.finished.then(
         () => close(SWAP_MS),
         () => undefined,
@@ -164,11 +190,13 @@ export default function IntroSplash({
     return () => {
       cancelled = true;
       window.clearTimeout(imageTimer);
-      window.clearTimeout(revealTimer);
+      document.removeEventListener("pointerdown", skip, true);
       animations.forEach((animation) => animation.cancel());
       html.style.overflow = previousOverflow;
-      setIntroPhase(null);
-      closeRef.current = null;
+      setIntroOverlay(false);
+      // Intro interrompue avant la cascade (navigation) : on rend la page
+      // visible. Une cascade en cours, elle, va au bout d'elle-même.
+      if (getIntroPhase() === "playing") setIntroPhase(null);
     };
   }, [visible, heroRef]);
 
@@ -178,7 +206,6 @@ export default function IntroSplash({
     <div
       ref={overlayRef}
       aria-hidden="true"
-      onPointerDown={() => closeRef.current?.(SKIP_FADE_MS)}
       className="vg-intro fixed inset-0 z-[100] flex touch-none justify-center bg-bg-main motion-reduce:hidden"
     >
       <div ref={stageRef} className="relative h-full w-full max-w-[480px] overflow-hidden">

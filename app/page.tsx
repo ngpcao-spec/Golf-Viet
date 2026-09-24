@@ -99,13 +99,13 @@ export default function HomePage() {
             <br />
             <span className="gold-text">đẳng cấp</span> đang chờ bạn
           </h1>
-          <p className="vg-reveal mt-2 text-[13px] text-text-secondary" style={revealDelay(180)}>
+          <p className="vg-reveal mt-2 text-[13px] text-text-secondary" style={revealDelay(200)}>
             Trải nghiệm khác biệt tại TP. Hồ Chí Minh
           </p>
         </div>
       </section>
 
-      <section className="vg-reveal mt-1 px-4" style={revealDelay(380)}>
+      <section className="vg-reveal mt-1 px-4" style={revealDelay(450)}>
         <div className="rounded-[16px] border border-border-gold bg-card/85 p-2.5 backdrop-blur-md">
           <ul className="space-y-2">
             <li>
@@ -157,7 +157,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="vg-reveal mt-5 px-4" style={revealDelay(560)}>
+      <section className="vg-reveal mt-5 px-4" style={revealDelay(700)}>
         <ul className="grid grid-cols-3 gap-2">
           {ARGUMENTS.map(({ icon: Icon, title, subtitle }) => (
             <li
@@ -175,7 +175,7 @@ export default function HomePage() {
         </ul>
       </section>
 
-      <section className="vg-reveal mt-6 px-4" style={revealDelay(700)}>
+      <section className="vg-reveal mt-6 px-4" style={revealDelay(850)}>
         <Link
           href="/assistant"
           className="block overflow-hidden rounded-[16px] border border-[rgba(216,180,90,0.3)] bg-gradient-to-br from-[#1c2119] to-[#12160f] p-4"
@@ -199,7 +199,7 @@ export default function HomePage() {
         </Link>
       </section>
 
-      <section id="deals" className="vg-reveal mt-7 px-4" style={revealDelay(820)}>
+      <section id="deals" className="vg-reveal mt-7 px-4" style={revealDelay(950)}>
         <SectionTitle
           title="Ưu đãi giờ vàng"
           action={
