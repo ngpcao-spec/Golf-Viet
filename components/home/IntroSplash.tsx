@@ -30,6 +30,12 @@ const PUSH_EASING = "cubic-bezier(0.45, 0, 0.25, 1)";
  * ~50 % du trajet) ; la cascade se termine avec l'atterrissage de la caméra.
  */
 const REVEAL_AT_MS = 1300;
+/**
+ * Instant où nom, slogan et titre entrent : la caméra a fait ~96 % de son
+ * trajet et paraît posée à l'œil. Attendre sa fin mathématique (PUSH_MS)
+ * laissait un temps mort perceptible entre l'arrêt et l'arrivée du texte.
+ */
+const TITLE_AT_MS = 2600;
 /** En fin de poussée, intro et accueil sont identiques : bascule quasi instantanée. */
 const SWAP_MS = 220;
 const SKIP_FADE_MS = 300;
@@ -49,8 +55,8 @@ let introPlayed = false;
  * pousse jusqu'au cadrage exact du hero. Un voile monte avec elle et prend la
  * forme exacte du fondu bas du hero. À mi-course, les éléments de l'accueil
  * commencent à entrer par-dessus l'intro, si bien que page et caméra se posent
- * ensemble ; l'overlay, devenu identique au hero, disparaît alors sans saut et
- * le nom, le slogan et le titre du hero entrent à cet instant seulement.
+ * ensemble. Quand la caméra paraît posée, le nom, le slogan et le titre du hero
+ * entrent à leur tour ; l'overlay, devenu identique au hero, disparaît sans saut.
  */
 export default function IntroSplash({
   heroRef,
@@ -105,6 +111,13 @@ export default function IntroSplash({
       revealed = true;
       startReveal();
     };
+    // Idem pour nom, slogan et titre : une seule entrée par intro.
+    let titled = false;
+    const showTitle = () => {
+      if (titled) return;
+      titled = true;
+      startTitleReveal();
+    };
 
     const close = (fadeMs: number) => {
       if (closed) return;
@@ -113,8 +126,8 @@ export default function IntroSplash({
       // Si la cascade n'a pas encore démarré (toucher, photo indisponible),
       // elle démarre maintenant ; sinon elle poursuit sa course sans saut.
       reveal();
-      // Nom, slogan et titre attendent toujours la fin de l'intro : maintenant.
-      startTitleReveal();
+      // Intro coupée avant l'atterrissage : nom, slogan et titre entrent maintenant.
+      showTitle();
 
       const from = getComputedStyle(overlay).opacity;
       const fade = overlay.animate([{ opacity: from }, { opacity: 0 }], {
@@ -197,6 +210,9 @@ export default function IntroSplash({
       const cue = stage.animate([{ opacity: 1 }, { opacity: 1 }], { duration: REVEAL_AT_MS });
       animations.push(cue);
       cue.finished.then(reveal, () => undefined);
+      const titleCue = stage.animate([{ opacity: 1 }, { opacity: 1 }], { duration: TITLE_AT_MS });
+      animations.push(titleCue);
+      titleCue.finished.then(showTitle, () => undefined);
       push.finished.then(
         () => close(SWAP_MS),
         () => undefined,

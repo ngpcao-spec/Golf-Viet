@@ -134,10 +134,13 @@ rechargement), la caméra et l'accueil forment une seule séquence de 3,4 s :
    monte avec elle et prend exactement la forme du fondu bas du hero.
 3. **dès 1,3 s** — l'accueil se construit **par-dessus la photo qui avance** : carte de
    recherche, sections, puis la barre d'onglets glisse depuis le bas.
-4. **3,4 s** — la caméra se pose, l'intro devenue identique à l'accueil disparaît sans saut,
-   et **seulement alors** le nom `VIET GOLF`, le slogan, le titre et le sous-titre entrent,
-   de haut en bas (`TITLE_DELAYS_MS` dans `lib/intro/reveal.ts`). Si l'utilisateur touche
-   l'écran pour passer l'intro, ils entrent aussitôt.
+4. **2,6 s** — la caméra a fait ~96 % de son trajet et paraît posée : le nom `VIET GOLF`,
+   le slogan, le titre et le sous-titre entrent, de haut en bas (`TITLE_AT_MS` dans
+   `components/home/IntroSplash.tsx`, `TITLE_DELAYS_MS` dans `lib/intro/reveal.ts`).
+   Ils sont visibles quand la caméra s'arrête. Si l'utilisateur touche l'écran pour passer
+   l'intro, ils entrent aussitôt.
+5. **3,4 s** — la caméra s'arrête ; l'intro, devenue identique à l'accueil, disparaît sans
+   saut.
 
 - **Raccord exact** : intro et hero affichent la même photo
   (`public/images/hero-viet-golf-wide.jpg`) avec le même mapping à l'écran, calculé par

@@ -47,17 +47,17 @@ export function setIntroOverlay(onScreen: boolean): void {
 
 /**
  * Le nom, le slogan et le titre du hero ont leur propre signal : ils n'entrent
- * qu'à la fin de l'intro, quand la caméra se pose ou quand l'utilisateur coupe
- * l'intro (`<html data-intro-title>` : `hidden`, puis `reveal`, puis absent).
+ * qu'à la fin de l'intro, quand la caméra paraît posée ou quand l'utilisateur
+ * coupe l'intro (`<html data-intro-title>` : `hidden`, puis `reveal`, puis absent).
  */
 export type TitlePhase = "hidden" | "reveal";
 
 /** Entrée de haut en bas : nom, slogan, titre, sous-titre. */
 export const TITLE_DELAYS_MS = {
   brand: 0,
-  slogan: 150,
-  title: 250,
-  subtitle: 450,
+  slogan: 120,
+  title: 200,
+  subtitle: 350,
 } as const;
 
 export function setTitlePhase(phase: TitlePhase | null): void {
