@@ -45,6 +45,38 @@ export function setIntroOverlay(onScreen: boolean): void {
   else delete root.dataset.introOverlay;
 }
 
+/**
+ * Le titre du hero a son propre signal : il n'entre qu'à la fin de l'intro,
+ * quand la caméra se pose ou quand l'utilisateur coupe l'intro
+ * (`<html data-intro-title>` : `hidden`, puis `reveal`, puis absent).
+ */
+export type TitlePhase = "hidden" | "reveal";
+
+/** Délai entre le titre et son sous-titre. */
+export const TITLE_SUBTITLE_GAP_MS = 200;
+
+export function setTitlePhase(phase: TitlePhase | null): void {
+  const root = document.documentElement;
+  if (phase) root.dataset.introTitle = phase;
+  else delete root.dataset.introTitle;
+}
+
+export function getTitlePhase(): string | undefined {
+  return document.documentElement.dataset.introTitle;
+}
+
+let titleTimer: number | undefined;
+
+/** Fait entrer le titre ; indépendant de l'overlay, comme la cascade. */
+export function startTitleReveal(): void {
+  setTitlePhase("reveal");
+  window.clearTimeout(titleTimer);
+  titleTimer = window.setTimeout(
+    () => setTitlePhase(null),
+    TITLE_SUBTITLE_GAP_MS + REVEAL_DURATION_MS,
+  );
+}
+
 let revealTimer: number | undefined;
 
 /**

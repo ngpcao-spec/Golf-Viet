@@ -23,7 +23,7 @@ import DemoFooter from "@/components/layout/DemoFooter";
 import HeroLogo from "@/components/home/HeroLogo";
 import IntroSplash from "@/components/home/IntroSplash";
 import { HERO_IMAGE, heroImageStyle } from "@/lib/intro/heroFraming";
-import { revealDelay } from "@/lib/intro/reveal";
+import { TITLE_SUBTITLE_GAP_MS, revealDelay } from "@/lib/intro/reveal";
 import { courses } from "@/data/courses";
 import { generateTeeTimes } from "@/data/seedTeeTimes";
 import { demoDates, longDateVi, mediumDateVi } from "@/lib/dates/demoDates";
@@ -92,14 +92,17 @@ export default function HomePage() {
 
         <div className="absolute inset-x-0 bottom-2 px-4">
           <h1
-            className="vg-reveal font-[family-name:var(--font-display)] text-[30px] leading-[1.15] font-semibold text-text-main"
+            className="vg-reveal-title font-[family-name:var(--font-display)] text-[30px] leading-[1.15] font-semibold text-text-main"
             style={revealDelay(0)}
           >
             Những sân golf
             <br />
             <span className="gold-text">đẳng cấp</span> đang chờ bạn
           </h1>
-          <p className="vg-reveal mt-2 text-[13px] text-text-secondary" style={revealDelay(200)}>
+          <p
+            className="vg-reveal-title mt-2 text-[13px] text-text-secondary"
+            style={revealDelay(TITLE_SUBTITLE_GAP_MS)}
+          >
             Trải nghiệm khác biệt tại TP. Hồ Chí Minh
           </p>
         </div>

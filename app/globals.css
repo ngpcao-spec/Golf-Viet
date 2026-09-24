@@ -176,7 +176,8 @@ body {
   }
 }
 
-html[data-intro-overlay] .vg-reveal {
+html[data-intro-overlay] .vg-reveal,
+html[data-intro-overlay] .vg-reveal-title {
   position: relative;
   z-index: 110;
 }
@@ -199,4 +200,16 @@ html[data-intro="reveal"] .vg-reveal {
 
 html[data-intro="reveal"] .vg-reveal-nav {
   animation: vg-reveal-nav 1000ms cubic-bezier(0.2, 0.7, 0.2, 1) 800ms both;
+}
+
+/* Le titre du hero n'entre qu'à la fin de l'intro (caméra posée ou intro coupée). */
+html[data-intro-title="hidden"] .vg-reveal-title {
+  opacity: 0;
+  pointer-events: none;
+  animation: vg-reveal-failsafe 500ms ease-out 7000ms forwards;
+}
+
+html[data-intro-title="reveal"] .vg-reveal-title {
+  animation: vg-reveal 1100ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--vg-delay, 0ms);
 }

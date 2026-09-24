@@ -4,7 +4,15 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import HeroLogo from "@/components/home/HeroLogo";
 import { HERO_IMAGE, heroMapping, introEndTransform } from "@/lib/intro/heroFraming";
-import { getIntroPhase, setIntroOverlay, setIntroPhase, startReveal } from "@/lib/intro/reveal";
+import {
+  getIntroPhase,
+  getTitlePhase,
+  setIntroOverlay,
+  setIntroPhase,
+  setTitlePhase,
+  startReveal,
+  startTitleReveal,
+} from "@/lib/intro/reveal";
 
 /**
  * Chronologie : apparition de la photo, longue poussée caméra qui se pose en
@@ -42,7 +50,8 @@ let introPlayed = false;
  * pousse jusqu'au cadrage exact du hero. Un voile monte avec elle et prend la
  * forme exacte du fondu bas du hero. À mi-course, les éléments de l'accueil
  * commencent à entrer par-dessus l'intro, si bien que page et caméra se posent
- * ensemble ; l'overlay, devenu identique au hero, disparaît alors sans saut.
+ * ensemble ; l'overlay, devenu identique au hero, disparaît alors sans saut et
+ * le titre du hero entre à cet instant seulement.
  */
 export default function IntroSplash({
   heroRef,
@@ -83,6 +92,7 @@ export default function IntroSplash({
     window.scrollTo(0, 0);
     // L'accueil attend, masqué, au-dessus de l'intro où il se construira.
     setIntroPhase("playing");
+    setTitlePhase("hidden");
     setIntroOverlay(true);
 
     const animations: Animation[] = [];
@@ -104,6 +114,8 @@ export default function IntroSplash({
       // Si la cascade n'a pas encore démarré (toucher, photo indisponible),
       // elle démarre maintenant ; sinon elle poursuit sa course sans saut.
       reveal();
+      // Le titre, lui, attend toujours la fin de l'intro : c'est maintenant.
+      startTitleReveal();
 
       const from = getComputedStyle(overlay).opacity;
       const fade = overlay.animate([{ opacity: from }, { opacity: 0 }], {
@@ -207,6 +219,7 @@ export default function IntroSplash({
       // Intro interrompue avant la cascade (navigation) : on rend la page
       // visible. Une cascade en cours, elle, va au bout d'elle-même.
       if (getIntroPhase() === "playing") setIntroPhase(null);
+      if (getTitlePhase() === "hidden") setTitlePhase(null);
     };
   }, [visible, heroRef]);
 
