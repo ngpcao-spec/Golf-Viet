@@ -46,14 +46,19 @@ export function setIntroOverlay(onScreen: boolean): void {
 }
 
 /**
- * Le titre du hero a son propre signal : il n'entre qu'à la fin de l'intro,
- * quand la caméra se pose ou quand l'utilisateur coupe l'intro
- * (`<html data-intro-title>` : `hidden`, puis `reveal`, puis absent).
+ * Le nom, le slogan et le titre du hero ont leur propre signal : ils n'entrent
+ * qu'à la fin de l'intro, quand la caméra se pose ou quand l'utilisateur coupe
+ * l'intro (`<html data-intro-title>` : `hidden`, puis `reveal`, puis absent).
  */
 export type TitlePhase = "hidden" | "reveal";
 
-/** Délai entre le titre et son sous-titre. */
-export const TITLE_SUBTITLE_GAP_MS = 200;
+/** Entrée de haut en bas : nom, slogan, titre, sous-titre. */
+export const TITLE_DELAYS_MS = {
+  brand: 0,
+  slogan: 150,
+  title: 250,
+  subtitle: 450,
+} as const;
 
 export function setTitlePhase(phase: TitlePhase | null): void {
   const root = document.documentElement;
@@ -67,13 +72,13 @@ export function getTitlePhase(): string | undefined {
 
 let titleTimer: number | undefined;
 
-/** Fait entrer le titre ; indépendant de l'overlay, comme la cascade. */
+/** Fait entrer nom, slogan et titre ; indépendant de l'overlay, comme la cascade. */
 export function startTitleReveal(): void {
   setTitlePhase("reveal");
   window.clearTimeout(titleTimer);
   titleTimer = window.setTimeout(
     () => setTitlePhase(null),
-    TITLE_SUBTITLE_GAP_MS + REVEAL_DURATION_MS,
+    TITLE_DELAYS_MS.subtitle + REVEAL_DURATION_MS,
   );
 }
 

@@ -128,15 +128,16 @@ de stack trace ni de 500 brut.
 À chaque lancement de l'application (ouverture de l'URL, icône de l'écran d'accueil,
 rechargement), la caméra et l'accueil forment une seule séquence de 3,4 s :
 
-1. **0 s** — écran de lancement : fond noir et logo, le temps que l'app démarre.
+1. **0 s** — écran de lancement : fond noir, le temps que l'app démarre.
 2. **0 → 3,4 s** — la photo large apparaît entière, puis la caméra avance, mouvement
    réparti sur toute la durée, et se pose en douceur sur le cadrage du hero. Un voile
    monte avec elle et prend exactement la forme du fondu bas du hero.
 3. **dès 1,3 s** — l'accueil se construit **par-dessus la photo qui avance** : carte de
    recherche, sections, puis la barre d'onglets glisse depuis le bas.
 4. **3,4 s** — la caméra se pose, l'intro devenue identique à l'accueil disparaît sans saut,
-   et **seulement alors** le titre du hero et son sous-titre entrent. Si l'utilisateur
-   touche l'écran pour passer l'intro, le titre entre aussitôt.
+   et **seulement alors** le nom `VIET GOLF`, le slogan, le titre et le sous-titre entrent,
+   de haut en bas (`TITLE_DELAYS_MS` dans `lib/intro/reveal.ts`). Si l'utilisateur touche
+   l'écran pour passer l'intro, ils entrent aussitôt.
 
 - **Raccord exact** : intro et hero affichent la même photo
   (`public/images/hero-viet-golf-wide.jpg`) avec le même mapping à l'écran, calculé par

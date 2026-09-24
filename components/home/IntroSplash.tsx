@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type RefObject } from "react";
-import HeroLogo from "@/components/home/HeroLogo";
 import { HERO_IMAGE, heroMapping, introEndTransform } from "@/lib/intro/heroFraming";
 import {
   getIntroPhase,
@@ -51,7 +50,7 @@ let introPlayed = false;
  * forme exacte du fondu bas du hero. À mi-course, les éléments de l'accueil
  * commencent à entrer par-dessus l'intro, si bien que page et caméra se posent
  * ensemble ; l'overlay, devenu identique au hero, disparaît alors sans saut et
- * le titre du hero entre à cet instant seulement.
+ * le nom, le slogan et le titre du hero entrent à cet instant seulement.
  */
 export default function IntroSplash({
   heroRef,
@@ -114,7 +113,7 @@ export default function IntroSplash({
       // Si la cascade n'a pas encore démarré (toucher, photo indisponible),
       // elle démarre maintenant ; sinon elle poursuit sa course sans saut.
       reveal();
-      // Le titre, lui, attend toujours la fin de l'intro : c'est maintenant.
+      // Nom, slogan et titre attendent toujours la fin de l'intro : maintenant.
       startTitleReveal();
 
       const from = getComputedStyle(overlay).opacity;
@@ -267,8 +266,6 @@ export default function IntroSplash({
           ref={shadeRef}
           className="pointer-events-none absolute left-0 top-0 h-0 w-full bg-gradient-to-b from-black/65 via-transparent to-transparent"
         />
-
-        <HeroLogo />
       </div>
     </div>
   );
