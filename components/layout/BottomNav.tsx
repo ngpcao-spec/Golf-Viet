@@ -61,7 +61,7 @@ export default function BottomNav() {
         </div>
       ) : null}
 
-      <nav className="fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-[480px] border-t border-border-gold bg-bg-secondary/95 backdrop-blur-md">
+      <nav className="vg-reveal-nav fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-[480px] border-t border-border-gold bg-bg-secondary/95 backdrop-blur-md">
         <ul className="flex items-stretch pb-[env(safe-area-inset-bottom,0px)]">
           {items.map((item) => {
             const target = "match" in item ? item.match : item.href;

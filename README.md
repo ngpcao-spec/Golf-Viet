@@ -126,18 +126,28 @@ de stack trace ni de 500 brut.
 ## 7 bis. Intro caméra de l'accueil
 
 À chaque lancement de l'application (ouverture de l'URL, icône de l'écran d'accueil,
-rechargement), la photo large apparaît entière puis la caméra avance jusqu'au cadrage exact
-du hero de l'accueil, avant un fondu vers la page. Durée totale : 2,2 s.
+rechargement) :
 
-- **Raccord exact** : l'intro et le hero affichent la même photo
+1. **0 → 2,8 s — poussée caméra.** La photo large apparaît entière, puis la caméra avance
+   et se pose lentement sur le cadrage du hero. Un voile monte avec elle et prend
+   exactement la forme du fondu bas du hero : en fin de course, l'intro est identique à
+   l'accueil.
+2. **2,8 → 4,6 s — l'accueil se construit.** Le titre, le sous-titre, la carte de recherche
+   et les sections suivantes entrent en cascade ; la barre d'onglets glisse depuis le bas.
+   L'accueil est utilisable dès ~3 s.
+
+- **Raccord exact** : intro et hero affichent la même photo
   (`public/images/hero-viet-golf-wide.jpg`) avec le même mapping à l'écran, calculé par
   `lib/intro/heroFraming.ts`. Pour recadrer l'accueil, modifier `focalX`, `focalY` et `zoom` :
   l'intro suit automatiquement.
-- **Non bloquante** : l'accueil est monté et fonctionnel dessous ; un toucher coupe l'intro.
+- **Réglages de rythme** : `PUSH_MS`, `PUSH_EASING`, `PHOTO_FADE_IN_MS` dans
+  `components/home/IntroSplash.tsx` ; délais de la cascade via `revealDelay(...)` dans
+  `app/page.tsx` ; durées d'entrée dans `app/globals.css` (`vg-reveal`).
+- **Non bloquante** : un toucher coupe l'intro et lance directement la cascade.
 - **Pas de rejeu** en revenant sur l'accueil via l'onglet `Trang chủ` pendant la navigation.
-- **Accessibilité** : avec « Réduire les animations » activé, l'intro est supprimée.
-- **Filet de sécurité** : si le JavaScript échoue ou arrive trop tard, l'écran d'intro
-  s'efface seul en CSS et ne bloque jamais l'accès.
+- **Accessibilité** : avec « Réduire les animations » activé, ni intro ni cascade.
+- **Filets de sécurité** : si le JavaScript échoue ou arrive trop tard, l'écran d'intro
+  s'efface seul (5,5 s) et l'accueil s'affiche quoi qu'il arrive (6,5 s).
 - Pour changer la photo, **changer aussi son nom de fichier** : l'optimiseur d'images de
   Next et de Vercel met les images en cache par URL.
 

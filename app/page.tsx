@@ -23,6 +23,7 @@ import DemoFooter from "@/components/layout/DemoFooter";
 import HeroLogo from "@/components/home/HeroLogo";
 import IntroSplash from "@/components/home/IntroSplash";
 import { HERO_IMAGE, heroImageStyle } from "@/lib/intro/heroFraming";
+import { revealDelay } from "@/lib/intro/reveal";
 import { courses } from "@/data/courses";
 import { generateTeeTimes } from "@/data/seedTeeTimes";
 import { demoDates, longDateVi, mediumDateVi } from "@/lib/dates/demoDates";
@@ -90,18 +91,21 @@ export default function HomePage() {
         <HeroLogo />
 
         <div className="absolute inset-x-0 bottom-2 px-4">
-          <h1 className="font-[family-name:var(--font-display)] text-[30px] leading-[1.15] font-semibold text-text-main">
+          <h1
+            className="vg-reveal font-[family-name:var(--font-display)] text-[30px] leading-[1.15] font-semibold text-text-main"
+            style={revealDelay(0)}
+          >
             Những sân golf
             <br />
             <span className="gold-text">đẳng cấp</span> đang chờ bạn
           </h1>
-          <p className="mt-2 text-[13px] text-text-secondary">
+          <p className="vg-reveal mt-2 text-[13px] text-text-secondary" style={revealDelay(180)}>
             Trải nghiệm khác biệt tại TP. Hồ Chí Minh
           </p>
         </div>
       </section>
 
-      <section className="mt-1 px-4">
+      <section className="vg-reveal mt-1 px-4" style={revealDelay(380)}>
         <div className="rounded-[16px] border border-border-gold bg-card/85 p-2.5 backdrop-blur-md">
           <ul className="space-y-2">
             <li>
@@ -153,7 +157,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mt-5 px-4">
+      <section className="vg-reveal mt-5 px-4" style={revealDelay(560)}>
         <ul className="grid grid-cols-3 gap-2">
           {ARGUMENTS.map(({ icon: Icon, title, subtitle }) => (
             <li
@@ -171,7 +175,7 @@ export default function HomePage() {
         </ul>
       </section>
 
-      <section className="mt-6 px-4">
+      <section className="vg-reveal mt-6 px-4" style={revealDelay(700)}>
         <Link
           href="/assistant"
           className="block overflow-hidden rounded-[16px] border border-[rgba(216,180,90,0.3)] bg-gradient-to-br from-[#1c2119] to-[#12160f] p-4"
@@ -195,7 +199,7 @@ export default function HomePage() {
         </Link>
       </section>
 
-      <section id="deals" className="mt-7 px-4">
+      <section id="deals" className="vg-reveal mt-7 px-4" style={revealDelay(820)}>
         <SectionTitle
           title="Ưu đãi giờ vàng"
           action={
