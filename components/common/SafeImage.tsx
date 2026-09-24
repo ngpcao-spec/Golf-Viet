@@ -11,6 +11,8 @@ export default function SafeImage({
   sizes = "(max-width: 520px) 100vw, 480px",
   className = "",
   priority = false,
+  unoptimized = false,
+  style,
 }: {
   src: string;
   alt: string;
@@ -18,6 +20,8 @@ export default function SafeImage({
   sizes?: string;
   className?: string;
   priority?: boolean;
+  unoptimized?: boolean;
+  style?: React.CSSProperties;
 }) {
   const [failed, setFailed] = useState(false);
 
@@ -42,6 +46,8 @@ export default function SafeImage({
       fill={fill}
       sizes={sizes}
       priority={priority}
+      unoptimized={unoptimized}
+      style={style}
       className={`object-cover ${className}`}
       onError={() => setFailed(true)}
     />

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   MapPin,
   CalendarDays,
@@ -20,6 +20,9 @@ import Badge from "@/components/common/Badge";
 import OptionSheet from "@/components/common/OptionSheet";
 import { GoldButton } from "@/components/common/GoldButton";
 import DemoFooter from "@/components/layout/DemoFooter";
+import HeroLogo from "@/components/home/HeroLogo";
+import IntroSplash from "@/components/home/IntroSplash";
+import { HERO_IMAGE, heroImageStyle } from "@/lib/intro/heroFraming";
 import { courses } from "@/data/courses";
 import { generateTeeTimes } from "@/data/seedTeeTimes";
 import { demoDates, longDateVi, mediumDateVi } from "@/lib/dates/demoDates";
@@ -36,6 +39,7 @@ export default function HomePage() {
   const router = useRouter();
   const { area, date, players, setSearch } = useSearch();
   const [sheet, setSheet] = useState<"date" | "players" | null>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
 
   const dateOptions = useMemo(
     () => demoDates(8).map((iso) => ({ value: iso, label: longDateVi(iso) })),
@@ -63,27 +67,27 @@ export default function HomePage() {
 
   return (
     <main>
+      <IntroSplash heroRef={heroRef} />
+
       <section className="relative">
-        {/* Ratio natif de la photo (941 x 974) : aucun recadrage. */}
-        <div className="relative aspect-[941/974] max-h-[45dvh] w-full">
+        {/* Cadrage final de l'intro caméra : voir lib/intro/heroFraming.ts. */}
+        <div
+          ref={heroRef}
+          className="relative aspect-[941/974] max-h-[45dvh] w-full overflow-hidden"
+        >
           <SafeImage
-            src="/images/hero-viet-golf-v2.jpg"
+            src={HERO_IMAGE.src}
             alt="Sân golf cao cấp lúc hoàng hôn"
             priority
+            unoptimized
+            style={heroImageStyle(HERO_IMAGE)}
           />
           {/* Voile haut pour le logo, fondu bas pour la lisibilité du titre. */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-transparent to-transparent" />
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-bg-main via-bg-main/80 to-transparent" />
         </div>
 
-        <div className="safe-top absolute inset-x-0 top-0 flex flex-col items-center px-4">
-          <p className="font-[family-name:var(--font-display)] text-[26px] tracking-[0.3em] text-gold">
-            VIET GOLF
-          </p>
-          <p className="mt-0.5 text-[10px] tracking-[0.25em] text-text-secondary">
-            PLAY THE BEST IN VIETNAM
-          </p>
-        </div>
+        <HeroLogo />
 
         <div className="absolute inset-x-0 bottom-2 px-4">
           <h1 className="font-[family-name:var(--font-display)] text-[30px] leading-[1.15] font-semibold text-text-main">

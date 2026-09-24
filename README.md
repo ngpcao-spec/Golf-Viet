@@ -123,6 +123,26 @@ de stack trace ni de 500 brut.
 
 ---
 
+## 7 bis. Intro caméra de l'accueil
+
+À chaque lancement de l'application (ouverture de l'URL, icône de l'écran d'accueil,
+rechargement), la photo large apparaît entière puis la caméra avance jusqu'au cadrage exact
+du hero de l'accueil, avant un fondu vers la page. Durée totale : 2,2 s.
+
+- **Raccord exact** : l'intro et le hero affichent la même photo
+  (`public/images/hero-viet-golf-wide.jpg`) avec le même mapping à l'écran, calculé par
+  `lib/intro/heroFraming.ts`. Pour recadrer l'accueil, modifier `focalX`, `focalY` et `zoom` :
+  l'intro suit automatiquement.
+- **Non bloquante** : l'accueil est monté et fonctionnel dessous ; un toucher coupe l'intro.
+- **Pas de rejeu** en revenant sur l'accueil via l'onglet `Trang chủ` pendant la navigation.
+- **Accessibilité** : avec « Réduire les animations » activé, l'intro est supprimée.
+- **Filet de sécurité** : si le JavaScript échoue ou arrive trop tard, l'écran d'intro
+  s'efface seul en CSS et ne bloque jamais l'accès.
+- Pour changer la photo, **changer aussi son nom de fichier** : l'optimiseur d'images de
+  Next et de Vercel met les images en cache par URL.
+
+---
+
 ## 8. Mini admin — `/demo-admin`
 
 Écran interne, sans authentification, pour la démonstration côté partenaire golf :

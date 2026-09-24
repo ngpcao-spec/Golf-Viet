@@ -126,3 +126,18 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/*
+ * Filet de sécurité de l'intro : si le JavaScript ne s'exécute pas ou arrive
+ * trop tard, l'écran d'intro s'efface seul et ne bloque jamais l'accueil.
+ */
+@keyframes vg-intro-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.vg-intro {
+  animation: vg-intro-failsafe 400ms ease-out 3800ms forwards;
+}
