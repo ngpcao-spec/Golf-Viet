@@ -55,6 +55,7 @@ export default function IntroSplash({
   const photoRef = useRef<HTMLDivElement>(null);
   const veilRef = useRef<HTMLDivElement>(null);
   const veilFadeRef = useRef<HTMLDivElement>(null);
+  const shadeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!visible) return;
@@ -65,9 +66,10 @@ export default function IntroSplash({
     const photo = photoRef.current;
     const veil = veilRef.current;
     const veilFade = veilFadeRef.current;
+    const shade = shadeRef.current;
     const hero = heroRef.current;
     const img = photo?.querySelector("img");
-    if (!overlay || !stage || !photo || !veil || !veilFade || !hero || !img) return;
+    if (!overlay || !stage || !photo || !veil || !veilFade || !shade || !hero || !img) return;
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduceMotion || performance.now() > LATE_START_MS) {
@@ -138,6 +140,14 @@ export default function IntroSplash({
 
       const end = heroMapping(heroBox, HERO_IMAGE.size, HERO_IMAGE);
       const move = introEndTransform(start, end, HERO_IMAGE.size);
+
+      // Voile haut (lisibilité du logo) : exactement la boîte mesurée du hero.
+      // Surtout pas de ratio + hauteur max en CSS : sur un élément positionné
+      // en absolu, Safari en déduit une largeur réduite.
+      shade.style.left = `${heroBox.x}px`;
+      shade.style.top = `${heroBox.y}px`;
+      shade.style.width = `${heroBox.width}px`;
+      shade.style.height = `${heroBox.height}px`;
 
       // Voile = fondu bas du hero (moitié basse de sa boîte) + fond plein
       // en dessous. Il part sous la photo entière et monte avec la caméra.
@@ -239,8 +249,11 @@ export default function IntroSplash({
           <div className="h-[100dvh] bg-bg-main" />
         </div>
 
-        {/* Même voile haut que le hero : identique au pixel près en fin de course. */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 aspect-[941/974] max-h-[45dvh] w-full bg-gradient-to-b from-black/65 via-transparent to-transparent" />
+        {/* Même voile haut que le hero, dimensionné par le JS sur sa boîte mesurée. */}
+        <div
+          ref={shadeRef}
+          className="pointer-events-none absolute left-0 top-0 h-0 w-full bg-gradient-to-b from-black/65 via-transparent to-transparent"
+        />
 
         <HeroLogo />
       </div>
